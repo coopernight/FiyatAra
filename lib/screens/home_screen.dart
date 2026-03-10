@@ -5,6 +5,7 @@ import '../services/product_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/product_card.dart';
 import 'product_detail_screen.dart';
+import 'search_links_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -141,26 +142,73 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(56),
+              preferredSize: const Size.fromHeight(110),
               child: Container(
                 color: Colors.white,
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                child: TextField(
-                  controller: _searchController,
-                  onChanged: _search,
-                  decoration: InputDecoration(
-                    hintText: 'iPhone, Samsung, Dyson...',
-                    prefixIcon: const Icon(Icons.search_rounded, color: AppTheme.primary),
-                    suffixIcon: _searchController.text.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear_rounded, color: AppTheme.textSecondary),
-                            onPressed: () {
-                              _searchController.clear();
-                              _loadPopular();
-                            },
-                          )
-                        : null,
-                  ),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _searchController,
+                      onChanged: _search,
+                      decoration: InputDecoration(
+                        hintText: 'iPhone, Samsung, Dyson...',
+                        prefixIcon: const Icon(Icons.search_rounded, color: AppTheme.primary),
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear_rounded, color: AppTheme.textSecondary),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  _loadPopular();
+                                },
+                              )
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    GestureDetector(
+                      onTap: () {
+                        final q = _searchController.text.trim();
+                        if (q.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Lütfen bir ürün adı girin')),
+                          );
+                          return;
+                        }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SearchLinksScreen(query: q),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF00C896), Color(0xFF00A87A)],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('🌐', style: TextStyle(fontSize: 15)),
+                            SizedBox(width: 6),
+                            Text(
+                              'Canlı Ara — 12 Sitede Karşılaştır',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
